@@ -12,22 +12,31 @@ const createEntryForm = new Form(document.forms.createEntryForm);
 createEntryForm.addOnSubmitListener(event => {
   event.preventDefault();
 
-  const [ description, lead, date, time ] = [ 'title', 'lead', 'date', 'time' ].map(x => createEntryForm.node[x].value)
+  const [description, lead, date, time] = ['title', 'lead', 'date', 'time'].map(
+    x => createEntryForm.node[x].value
+  );
 
-  initTodoList(addEntry(todoListModel,{
-    description,
-    lead,
-    dateTime: new Date(`${date}T${time}`),
-    tags: [ ],
-    closed: false
-  }));
+  initTodoList(
+    addEntry(todoListModel, {
+      description,
+      lead,
+      dateTime: new Date(`${date}T${time}`),
+      tags: [],
+      closed: false,
+    })
+  );
   createEntryModal.close();
 });
 
-createEntryForm.addOnCancelListener(() => { createEntryForm.reset(); createEntryModal.close() });
+createEntryForm.addOnCancelListener(() => {
+  createEntryForm.reset();
+  createEntryModal.close();
+});
 
-document.getElementById('newTaskButton').onclick = () => { createEntryForm.reset(); createEntryModal.open() };
-
+document.getElementById('newTaskButton').onclick = () => {
+  createEntryForm.reset();
+  createEntryModal.open();
+};
 
 function initNav(todoListModel) {
   const navNode = document.getElementsByClassName('navigation')[0];
@@ -39,7 +48,7 @@ function initNav(todoListModel) {
     const labelEntry = {
       id: labelNode.attributes.ref.value,
       node: labelNode,
-      active: false
+      active: false,
     };
 
     nav.push(labelEntry);
@@ -51,33 +60,38 @@ function initNav(todoListModel) {
       }
 
       const contentNode = document.getElementById(labelEntry.id);
-      if (!contentNode) { return; }
+      if (!contentNode) {
+        return;
+      }
 
       contentNode.style.display = 'flex';
 
-      nav.filter(x => x.id !== labelEntry.id).forEach(x => {
-        x.active = false;
-        x.node.className = removeActiveClassFromClassName(x.node.className);
+      nav
+        .filter(x => x.id !== labelEntry.id)
+        .forEach(x => {
+          x.active = false;
+          x.node.className = removeActiveClassFromClassName(x.node.className);
 
-        const contentNode = document.getElementById(x.id);
-        if (!contentNode) { return; }
+          const contentNode = document.getElementById(x.id);
+          if (!contentNode) {
+            return;
+          }
 
-        contentNode.style.display = 'none';
-      });
+          contentNode.style.display = 'none';
+        });
 
       updateInkNode(inkNode, nav, navNode);
-    }
+    };
   });
 
   nav[0].active = true;
   nav[0].node.onclick();
 
-  window.addEventListener("resize", () => {
+  window.addEventListener('resize', () => {
     updateInkNode(inkNode, nav, navNode);
   });
 
   initTodoList(todoListModel);
-
 }
 
 function initTodoList(todoListModel) {
@@ -95,7 +109,9 @@ function refreshTodoList(containerNode, todoListModel) {
     containerNode.removeChild(containerNode.lastChild);
   }
 
-  todoListModel.map(x => renderTodoListDay(x, todoListModel)).forEach(x => containerNode.appendChild(x));
+  todoListModel
+    .map(x => renderTodoListDay(x, todoListModel))
+    .forEach(x => containerNode.appendChild(x));
 }
 
 function renderTodoListDay(todoListDay, todoListModel) {
@@ -107,18 +123,23 @@ function renderTodoListDay(todoListDay, todoListModel) {
     .filter(({ closed }) => !(closed ^ (todoListDay.show === 'closed')))
     .map(x => renderTodoEntry(x, todoListModel));
   const date = new Date(todoListDay.date);
-  const onText = today.toLocaleDateString() === todoListDay.date ? 'Today' : `On ${date.toISOString().split('T')[0]}`;
+  const onText =
+    today.toLocaleDateString() === todoListDay.date
+      ? 'Today'
+      : `On ${date.toISOString().split('T')[0]}`;
   const header = `Due ${onText} (${todoListRender.length})`;
-  const closedText = !closedTodoEntries.length ? '' : `<button class="todoClosedDayHeader">Closed ${onText} (${closedTodoEntries.length})</button>`;
+  const closedText = !closedTodoEntries.length
+    ? ''
+    : `<button class="todoClosedDayHeader">Closed ${onText} (${closedTodoEntries.length})</button>`;
 
   const div = document.createElement('div');
-  div.innerHTML = `<div class="todoDayHeader"><div class="todoOpenedDayHeader">${header}</div>${closedText}</div>`
+  div.innerHTML = `<div class="todoDayHeader"><div class="todoOpenedDayHeader">${header}</div>${closedText}</div>`;
 
   if (closedText !== '') {
     div.children[0].children[1].onclick = () => {
       todoListDay.show = todoListDay.show === 'opened' ? 'closed' : 'opened';
       initTodoList(todoListModel);
-    }
+    };
   }
 
   todoListRender.forEach(x => div.appendChild(x));
@@ -135,7 +156,7 @@ function divideListByDate(entries) {
       current.list = [entry];
     } else if (current.date !== entry.dateTime.toLocaleDateString()) {
       results.push(current);
-      current = { date: entry.dateTime.toLocaleDateString(), list: [entry] }
+      current = { date: entry.dateTime.toLocaleDateString(), list: [entry] };
     } else {
       current.list.push(entry);
     }
@@ -148,17 +169,24 @@ function divideListByDate(entries) {
 }
 
 function addEntry(datePartitionedEntries, entry) {
-  const partition = datePartitionedEntries.find(x => x.date === entry.dateTime.toLocaleDateString());
+  const partition = datePartitionedEntries.find(
+    x => x.date === entry.dateTime.toLocaleDateString()
+  );
 
   if (partition) {
-    partition.list = [...partition.list, entry].sort((x, y) => x.dateTime - y.dateTime);
+    partition.list = [...partition.list, entry].sort(
+      (x, y) => x.dateTime - y.dateTime
+    );
     return datePartitionedEntries;
   }
 
-  return [...datePartitionedEntries, {
-    date: entry.dateTime.toLocaleDateString(),
-    list: [entry]
-  }].sort((x, y) => new Date(x.date) - new Date(y.dateTime))
+  return [
+    ...datePartitionedEntries,
+    {
+      date: entry.dateTime.toLocaleDateString(),
+      list: [entry],
+    },
+  ].sort((x, y) => new Date(x.date) - new Date(y.dateTime));
 }
 
 function removeActiveClassFromClassName(className) {
@@ -166,7 +194,10 @@ function removeActiveClassFromClassName(className) {
 }
 
 function removeClassFromClassName(className, _class) {
-  return className.split(' ').filter(x => x !== _class).join(' ');
+  return className
+    .split(' ')
+    .filter(x => x !== _class)
+    .join(' ');
 }
 
 function nodeHasClass(_class) {
@@ -211,9 +242,9 @@ function renderTodoEntry(todoEntry, todoListModel) {
     if (propertyName === 'opacity') {
       initTodoList(todoListModel);
     }
-  }
+  };
 
-  containerNode.children[1].addEventListener("transitionend", y);
+  containerNode.children[1].addEventListener('transitionend', y);
 
   containerNode.children[0].onchange = () => {
     todoEntry.closed = containerNode.children[0].checked;

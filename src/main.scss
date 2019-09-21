@@ -1,4 +1,5 @@
-@import "./styles/fonts.scss", "./styles/tabsFramework.scss", "./styles/customCheckbox.scss";
+@import "./styles/fonts.scss", "./styles/tabsFramework.scss",
+  "./styles/customCheckbox.scss";
 @import "../node_modules/simplebar/dist/simplebar.css";
 @import "./styles/customRadioButton.scss";
 @import "./styles/customInputs.scss";
@@ -164,7 +165,7 @@ html {
 }
 
 .standardButton {
-  @extend %standardButton
+  @extend %standardButton;
 }
 
 .tools {

@@ -1,0 +1,7 @@
+trailingComma: es5
+overrides:
+  - files:
+      - "*.js"
+      - "*.es6"
+    options:
+      singleQuote: true

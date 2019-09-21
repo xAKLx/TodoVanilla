@@ -1,91 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TODO</title>
+    <link rel="stylesheet" href="dist/main.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TODO</title>
-  <link rel="stylesheet" href="dist/main.css">
-</head>
-
-<body>
-  <div class="background"></div>
-  <div class="titleBar">
-    <span class="title">My Tasks</span>
-    <div class="tools">
-      <button id="newTaskButton" class="standardButton">New Task</button>
-    </div>
-  </div>
-  <div class="content">
-    <div class="navigation">
-      <div class="tabLabel" ref="work">Work</div>
-      <div class="tabLabel" ref="personal">Personal</div>
-      <div class="inkBar"></div>
-    </div>
-
-    <div class="todoList" data-simplebar>
-      <div id="work" class="tabContent">
-      </div>
-
-      <div id="personal">
-        Placeholder
+  <body>
+    <div class="background"></div>
+    <div class="titleBar">
+      <span class="title">My Tasks</span>
+      <div class="tools">
+        <button id="newTaskButton" class="standardButton">New Task</button>
       </div>
     </div>
-  </div>
+    <div class="content">
+      <div class="navigation">
+        <div class="tabLabel" ref="work">Work</div>
+        <div class="tabLabel" ref="personal">Personal</div>
+        <div class="inkBar"></div>
+      </div>
 
-  <div class="modal" id="createEntryModal">
-    <div class="modalContent">
-      <form id="createEntryForm">
-        <div class="createEntryNav">
-          <label class="radioButtonContainer">
-            <input type="radio" name="entryType"  checked="checked">
+      <div class="todoList" data-simplebar>
+        <div id="work" class="tabContent"></div>
 
-            <div class="radioButtonCheckMark">
-              <div class="radioButtonMark"></div>
-            </div>
-
-            <span class="radioButtonLabel">Task</span>
-          </label>
-
-          <label class="radioButtonContainer">
-            <input type="radio" name="entryType">
-
-            <div class="radioButtonCheckMark">
-              <div class="radioButtonMark"></div>
-            </div>
-
-            <span class="radioButtonLabel">Meeting</span>
-          </label>
+        <div id="personal">
+          Placeholder
         </div>
-
-        <div class="createEntryBody">
-
-          <div class="inputGroup inputGroupColumn">
-            <label>Title</label>
-            <textarea name="title" class="textarea" placeholder="Start typing..." style="font-family: Roboto; padding: 10px;"
-              required></textarea>
-          </div>
-
-          <div class="inputGroup inputGroupColumn">
-            <label for="lead">Select Lead</label>
-            <input name="lead" class="textarea" required />
-          </div>
-
-          <div class="inputGroup">
-            Due on <input name="date" class="standardInput" type="date" required> <input name="time" type="time" class="standardInput" required>
-          </div>
-
-        </div>
-
-        <div class="createEntryActions">
-          <button name="cancel" class="standardButton" style="background-color: red; margin-right: 10px">Cancel</button>
-          <button type="submit" class="standardButton">Create</button>
-        </div>
-      </form>
+      </div>
     </div>
-  </div>
-</body>
 
+    <div class="modal" id="createEntryModal">
+      <div class="modalContent">
+        <form id="createEntryForm">
+          <div class="createEntryNav">
+            <label class="radioButtonContainer">
+              <input type="radio" name="entryType" checked="checked" />
+
+              <div class="radioButtonCheckMark">
+                <div class="radioButtonMark"></div>
+              </div>
+
+              <span class="radioButtonLabel">Task</span>
+            </label>
+
+            <label class="radioButtonContainer">
+              <input type="radio" name="entryType" />
+
+              <div class="radioButtonCheckMark">
+                <div class="radioButtonMark"></div>
+              </div>
+
+              <span class="radioButtonLabel">Meeting</span>
+            </label>
+          </div>
+
+          <div class="createEntryBody">
+            <div class="inputGroup inputGroupColumn">
+              <label>Title</label>
+              <textarea
+                name="title"
+                class="textarea"
+                placeholder="Start typing..."
+                style="font-family: Roboto; padding: 10px;"
+                required
+              ></textarea>
+            </div>
+
+            <div class="inputGroup inputGroupColumn">
+              <label for="lead">Select Lead</label>
+              <input name="lead" class="textarea" required />
+            </div>
+
+            <div class="inputGroup">
+              Due on
+              <input name="date" class="standardInput" type="date" required />
+              <input name="time" type="time" class="standardInput" required />
+            </div>
+          </div>
+
+          <div class="createEntryActions">
+            <button
+              name="cancel"
+              class="standardButton"
+              style="background-color: red; margin-right: 10px"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="standardButton">Create</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
 </html>
 
 <script src="dist/main.js"></script>

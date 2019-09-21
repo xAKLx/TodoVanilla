@@ -1,14 +1,13 @@
-
 export class Modal {
   constructor(node) {
     this.node = node;
 
-    ['open', 'close'].forEach(name => this[name] = this[name].bind(this));
+    ['open', 'close'].forEach(name => (this[name] = this[name].bind(this)));
     node.onclick = event => {
-      if ( event.target === node ) { 
-        this.close(); 
+      if (event.target === node) {
+        this.close();
       }
-    }
+    };
   }
 
   open() {
@@ -18,5 +17,4 @@ export class Modal {
   close() {
     this.node.style.display = 'none';
   }
-
 }
