@@ -1,12 +1,35 @@
 import { todoList } from './initialData.es6';
 import 'simplebar';
+import { Form } from './handleForms';
+import { Modal } from './modal';
 
 const todoListModel = createTodoListModel(todoList);
 
-initNav();
+initNav(todoListModel);
+
+const createEntryModal = new Modal(document.getElementById('createEntryModal'));
+const createEntryForm = new Form(document.forms.createEntryForm);
+createEntryForm.addOnSubmitListener(event => {
+  event.preventDefault();
+
+  const [ description, lead, date, time ] = [ 'title', 'lead', 'date', 'time' ].map(x => createEntryForm.node[x].value)
+
+  initTodoList(addEntry(todoListModel,{
+    description,
+    lead,
+    dateTime: new Date(`${date}T${time}`),
+    tags: [ ],
+    closed: false
+  }));
+  createEntryModal.close();
+});
+
+createEntryForm.addOnCancelListener(() => { createEntryForm.reset(); createEntryModal.close() });
+
+document.getElementById('newTaskButton').onclick = () => { createEntryForm.reset(); createEntryModal.open() };
 
 
-function initNav() {
+function initNav(todoListModel) {
   const navNode = document.getElementsByClassName('navigation')[0];
   const labelNodes = [...navNode.children].filter(nodeHasClass('tabLabel'));
   const inkNode = [...navNode.children].find(nodeHasClass('inkBar'));
@@ -53,11 +76,11 @@ function initNav() {
     updateInkNode(inkNode, nav, navNode);
   });
 
-  initTodoList();
+  initTodoList(todoListModel);
 
 }
 
-function initTodoList() {
+function initTodoList(todoListModel) {
   const workNode = document.getElementById('work');
   refreshTodoList(workNode, todoListModel);
 }
@@ -72,17 +95,17 @@ function refreshTodoList(containerNode, todoListModel) {
     containerNode.removeChild(containerNode.lastChild);
   }
 
-  todoListModel.map(renderTodoListDay).forEach(x => containerNode.appendChild(x));
+  todoListModel.map(x => renderTodoListDay(x, todoListModel)).forEach(x => containerNode.appendChild(x));
 }
 
-function renderTodoListDay(todoListDay) {
+function renderTodoListDay(todoListDay, todoListModel) {
   const today = new Date();
   const closedTodoEntries = todoListDay.list.filter(({ closed }) => closed);
 
-  todoListDay.show = closedTodoEntries.length? todoListDay.show: 'opened';
+  todoListDay.show = closedTodoEntries.length ? todoListDay.show : 'opened';
   const todoListRender = todoListDay.list
     .filter(({ closed }) => !(closed ^ (todoListDay.show === 'closed')))
-    .map(renderTodoEntry);
+    .map(x => renderTodoEntry(x, todoListModel));
   const date = new Date(todoListDay.date);
   const onText = today.toLocaleDateString() === todoListDay.date ? 'Today' : `On ${date.toISOString().split('T')[0]}`;
   const header = `Due ${onText} (${todoListRender.length})`;
@@ -94,7 +117,7 @@ function renderTodoListDay(todoListDay) {
   if (closedText !== '') {
     div.children[0].children[1].onclick = () => {
       todoListDay.show = todoListDay.show === 'opened' ? 'closed' : 'opened';
-      initTodoList();
+      initTodoList(todoListModel);
     }
   }
 
@@ -124,6 +147,20 @@ function divideListByDate(entries) {
   return results;
 }
 
+function addEntry(datePartitionedEntries, entry) {
+  const partition = datePartitionedEntries.find(x => x.date === entry.dateTime.toLocaleDateString());
+
+  if (partition) {
+    partition.list = [...partition.list, entry].sort((x, y) => x.dateTime - y.dateTime);
+    return datePartitionedEntries;
+  }
+
+  return [...datePartitionedEntries, {
+    date: entry.dateTime.toLocaleDateString(),
+    list: [entry]
+  }].sort((x, y) => new Date(x.date) - new Date(y.dateTime))
+}
+
 function removeActiveClassFromClassName(className) {
   return removeClassFromClassName(className, 'active');
 }
@@ -144,7 +181,7 @@ function updateInkNode(inkNode, nav, navNode) {
   inkNode.style.right = `${navNode.getBoundingClientRect().right - right}px`;
 }
 
-function renderTodoEntry(todoEntry) {
+function renderTodoEntry(todoEntry, todoListModel) {
   const { description, lead, dateTime, tags, closed } = todoEntry;
   let hour = dateTime.getHours();
   let minute = dateTime.getMinutes();
@@ -172,10 +209,10 @@ function renderTodoEntry(todoEntry) {
 
   let y = ({ propertyName }) => {
     if (propertyName === 'opacity') {
-      initTodoList();
+      initTodoList(todoListModel);
     }
   }
-  
+
   containerNode.children[1].addEventListener("transitionend", y);
 
   containerNode.children[0].onchange = () => {
